@@ -1,0 +1,205 @@
+/* Navbar Header */
+.navbar-header {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 100%;
+  height: 60px; /* Set a fixed height for the header area */
+  z-index: 1000;
+  padding: 0 80px; /* Apply symmetrical padding to the header */
+  box-sizing: border-box;
+}
+
+.hamburger-btn {
+  position: absolute;
+  left: 20px; /* Position relative to viewport edge */
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border: 1px solid #f0f0f0;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  color: #333;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 0;
+}
+
+.hamburger-btn:hover, .hamburger-btn:focus {
+  background: none;
+  outline: none;
+}
+
+.hamburger-btn:focus-visible {
+  outline: none;
+}
+
+/* Search Bar Styles */
+.search-container {
+  width: 100%;
+  max-width: 800px; /* This will now take full effect */
+  height: 100%;
+  margin: 0 auto; /* This centers the container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* Removed conflicting padding */
+  box-sizing: border-box;
+}
+
+.search-bar {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 999px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 0 16px;
+  border: 1px solid #eee;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 14px 12px;
+  border: none;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  background: transparent;
+  outline: none;
+  box-shadow: none;
+  padding-left: 44px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.4rem;
+  color: #aaa;
+  pointer-events: none;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  background: white;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  z-index: 1002;
+  transition: left 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: flex-start; /* Aligns button to the left */
+  padding: 15px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.close-btn {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  color: #555;
+  padding: 0;
+}
+
+.close-btn:hover, .close-btn:focus {
+  /* No hover effect as requested */
+  background: white;
+  border-color: #e0e0e0;
+  outline: none;
+}
+
+.close-btn:focus-visible {
+  outline: none;
+}
+
+/* Profile Section */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-icon {
+  font-size: 80px;
+  color: #ccc;
+}
+
+.welcome-text {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  margin-top: auto; /* Pushes footer to the bottom */
+  padding: 20px;
+}
+
+.logout-action {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px;
+  border: none;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-action:hover {
+  background-color: #ffcdd2;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 1001;
+}
+
+@media (min-width: 768px) {
+  /* On desktop, the hamburger button is still visible in this design */
+  .search-container {
+    /* No padding needed here anymore */
+  }
+} 

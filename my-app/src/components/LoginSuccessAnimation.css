@@ -1,0 +1,42 @@
+.animation-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #fff7ed 0%, #fef9c3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.lottie-wrapper {
+  position: relative;
+  z-index: 2;
+  width: 500px;
+  height: 500px;
+}
+
+.food-item {
+  position: absolute;
+  font-size: 2rem; /* Slightly smaller to not overwhelm */
+  animation: blast 5s ease-out forwards;
+  animation-delay: var(--delay);
+  opacity: 0;
+  z-index: 1; /* Behind the lottie wrapper */
+}
+
+@keyframes blast {
+  0% {
+    transform: scale(0.5) translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5) translate(var(--x), var(--y)) rotate(var(--rotate));
+    opacity: 0;
+  }
+}
+
+/* All other styles removed as they are no longer needed */ 
