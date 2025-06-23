@@ -27,10 +27,14 @@
   flex-shrink: 0; /* Prevent shrinking */
   box-shadow: 0 1px 4px rgba(0,0,0,0.07);
   transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
 }
 
-.hamburger-btn:focus-visible {
+.hamburger-btn:focus,
+.hamburger-btn:active {
   outline: none;
+  background: white !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
 }
 
 .hamburger-btn .material-icons {
@@ -49,6 +53,7 @@
   display: flex;
   justify-content: center;
   padding: 0 12px;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
 }
 
 .search-bar {
@@ -97,9 +102,16 @@
     cursor: pointer;
     position: relative;
     color: #333;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
     box-shadow: 0 1px 4px rgba(0,0,0,0.07);
     transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+}
+
+.cart-btn:focus, .cart-btn:active {
+    outline: none; /* Remove focus outline */
+    background: white !important; /* Ensure background stays white */
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07); /* Keep shadow consistent */
 }
 
 .cart-btn:hover {
