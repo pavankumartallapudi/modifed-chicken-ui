@@ -3,125 +3,9 @@ import { supabase } from '../supabaseClient';
 import ReactModal from 'react-modal';
 import './RestaurantsPage.css';
 import { useCart } from '../CartContext';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements, PaymentRequestButtonElement } from '@stripe/react-stripe-js';
 import ReviewSection from './ReviewSection';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import RestaurantCard from './RestaurantCard';
-
-const stripePromise = loadStripe('pk_test_51RbTpBGapGv2lLdZZYPUYMxOFi6DqmNMGjbquTXRHVl1NUVHN2VwQpESinh48gBTAlvWCSfpXeUINTUTHWL5INdd00MrvxF4qR');
-
-function PaymentStep({ amount, onPaymentSuccess }) {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [loading, setLoading] = useState(false);
-  const [paymentRequest, setPaymentRequest] = useState(null);
-  const [prButtonError, setPrButtonError] = useState(null);
-
-  useEffect(() => {
-    if (stripe) {
-      const pr = stripe.paymentRequest({
-        country: 'IN', // Change to your country code if needed
-        currency: 'inr',
-        total: {
-          label: 'Total',
-          amount: Math.round(amount * 100), // Stripe expects amount in paise
-        },
-        requestPayerName: true,
-        requestPayerEmail: true,
-      });
-      pr.canMakePayment().then(result => {
-        if (result) {
-          setPaymentRequest(pr);
-        } else {
-          setPaymentRequest(null);
-        }
-      });
-      pr.on('paymentmethod', async (ev) => {
-        setLoading(true);
-        try {
-          // Create PaymentIntent on backend
-          const res = await fetch('http://localhost:4242/create-payment-intent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount }),
-          });
-          const { clientSecret } = await res.json();
-          // Confirm the PaymentIntent
-          const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
-            clientSecret,
-            { payment_method: ev.paymentMethod.id },
-            { handleActions: false }
-          );
-          if (confirmError) {
-            ev.complete('fail');
-            setPrButtonError(confirmError.message);
-            setLoading(false);
-            return;
-          }
-          ev.complete('success');
-          if (paymentIntent.status === 'requires_action') {
-            const { error: actionError } = await stripe.confirmCardPayment(clientSecret);
-            if (actionError) {
-              setPrButtonError(actionError.message);
-              setLoading(false);
-              return;
-            }
-          }
-          setLoading(false);
-          onPaymentSuccess();
-        } catch (err) {
-          setPrButtonError('Payment failed.');
-          setLoading(false);
-        }
-      });
-    }
-  }, [stripe, amount, onPaymentSuccess]);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    // 1. Create PaymentIntent on backend
-    const res = await fetch('http://localhost:4242/create-payment-intent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount }),
-    });
-    const { clientSecret } = await res.json();
-    // 2. Confirm payment on frontend
-    const result = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-      },
-    });
-    setLoading(false);
-    if (result.error) {
-      alert(result.error.message);
-    } else if (result.paymentIntent.status === 'succeeded') {
-      onPaymentSuccess();
-    }
-  };
-
-  return (
-    <div>
-      {paymentRequest && (
-        <div style={{ marginBottom: 16 }}>
-          <PaymentRequestButtonElement options={{ paymentRequest }} />
-          {prButtonError && <div style={{ color: 'red', marginTop: 8 }}>{prButtonError}</div>}
-          <div style={{ textAlign: 'center', color: '#888', fontSize: 13, marginTop: 4 }}>
-            Or pay with card below
-          </div>
-        </div>
-      )}
-      <form onSubmit={handleSubmit} style={{marginTop:8}}>
-        <CardElement />
-        <button type="submit" disabled={!stripe || loading} style={{width:'100%', background:'#ff4d5a', color:'#fff', border:'none', borderRadius:8, padding:'12px 0', fontWeight:600, fontSize:'1.08rem', cursor:'pointer', marginTop:12}}>
-          {loading ? 'Processing...' : 'Pay Now'}
-        </button>
-      </form>
-    </div>
-  );
-}
 
 export default function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState([]);
@@ -233,6 +117,45 @@ export default function RestaurantsPage() {
   useEffect(() => {
     if (cartModalOpen) setCheckoutStep('cart');
   }, [cartModalOpen]);
+
+  function handleRazorpayPayment() {
+    const amount = cartItems.reduce((sum, item) => sum + item.dish.price * item.quantity, 0);
+    const options = {
+      key: process.env.REACT_APP_RAZORPAY_KEY, // Use Razorpay key from .env
+      amount: amount * 100, // in paise
+      currency: 'INR',
+      name: 'Chicken App',
+      description: 'Order Payment',
+      handler: function (response) {
+        // On payment success
+        setOrderId(Math.floor(Math.random() * 1000000));
+        clearCart();
+        setCheckoutStep('payment');
+      },
+      prefill: {
+        name: orderDetails.name,
+        email: '',
+        contact: orderDetails.phone
+      },
+      notes: {
+        address: orderDetails.address
+      },
+      theme: {
+        color: '#ff4d5a'
+      }
+    };
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  }
+
+  useEffect(() => {
+    if (!window.Razorpay) {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
 
   return (
     <div className="register-bg food-bg-animate" style={{minHeight:'100vh', width:'100vw', position:'relative'}}>
@@ -423,7 +346,7 @@ export default function RestaurantsPage() {
           )
         )}
         {checkoutStep === 'form' && (
-          <form onSubmit={e => { e.preventDefault(); setCheckoutStep('payment'); }} style={{marginTop:8}}>
+          <form onSubmit={e => { e.preventDefault(); handleRazorpayPayment(); }} style={{marginTop:8}}>
             <input
               type="text"
               placeholder="Name"
@@ -448,51 +371,14 @@ export default function RestaurantsPage() {
               style={{width:'100%', marginBottom:10, padding:8, borderRadius:6, border:'1px solid #eee', minHeight:60}}
             />
             <div style={{display:'flex', gap:10}}>
-              <button type="submit" style={{flex:1, background:'#ff4d5a', color:'#fff', border:'none', borderRadius:8, padding:'12px 0', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Next: Payment</button>
+              <button type="submit" style={{flex:1, background:'#ff4d5a', color:'#fff', border:'none', borderRadius:8, padding:'12px 0', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Pay & Place Order</button>
               <button type="button" onClick={() => setCheckoutStep('cart')} style={{flex:1, background:'#eee', color:'#444', border:'none', borderRadius:8, padding:'12px 0', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Back</button>
             </div>
           </form>
         )}
         {checkoutStep === 'payment' && (
-          <Elements stripe={stripePromise}>
-            <PaymentStep amount={cartTotal} onPaymentSuccess={async () => {
-              // Insert order and order_items in Supabase after payment
-              const { data: order, error: orderError } = await supabase
-                .from('orders')
-                .insert([{
-                  name: orderDetails.name,
-                  phone: orderDetails.phone,
-                  address: orderDetails.address,
-                  total_price: cartTotal,
-                }])
-                .select()
-                .single();
-              if (orderError) {
-                alert('Order failed: ' + orderError.message);
-                return;
-              }
-              const orderItems = cartItems.map(item => ({
-                order_id: order.id,
-                dish_id: item.dish.id,
-                quantity: item.quantity,
-                price_at_order: item.dish.price,
-              }));
-              const { error: itemsError } = await supabase
-                .from('order_items')
-                .insert(orderItems);
-              if (itemsError) {
-                alert('Order items failed: ' + itemsError.message);
-                return;
-              }
-              setOrderId(order.id);
-              clearCart();
-              setCheckoutStep('confirm');
-            }} />
-          </Elements>
-        )}
-        {checkoutStep === 'confirm' && (
           <div style={{textAlign:'center', marginTop:24}}>
-            <h3 style={{color:'#1a7f37'}}>Order Confirmed!</h3>
+            <h3 style={{color:'#1a7f37'}}>Payment Successful!</h3>
             <p>Your order ID: <b>{orderId}</b></p>
             <p>Thank you for ordering, {orderDetails.name}!</p>
             <button onClick={() => { setCheckoutStep('cart'); setCartModalOpen(false); }} style={{marginTop:18, background:'#ff4d5a', color:'#fff', border:'none', borderRadius:8, padding:'10px 28px', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Close</button>
