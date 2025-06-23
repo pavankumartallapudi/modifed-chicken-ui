@@ -145,22 +145,22 @@ export default function BiryaniPage() {
       <svg className="food-float food-float-15" width="24" height="24" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="22" rx="10" ry="4" fill="#fff" /></svg>
       {/* Main content */}
       <div style={{position:'relative', zIndex:2}}>
-        <div className="category-search-bar" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <span className="material-icons">search</span>
-          <input
-            type="text"
-            placeholder="Search biryani points..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-          <span style={{ marginLeft: 'auto', cursor: 'pointer', position: 'relative' }} onClick={() => setCartModalOpen(true)}>
-            <span className="material-icons" style={{ fontSize: 28, color: '#ff4d5a' }}>shopping_cart</span>
-            {cartCount > 0 && (
-              <span style={{ position: 'absolute', top: -6, right: -8, background: '#ff4d5a', color: '#fff', borderRadius: '50%', fontSize: 13, padding: '2px 6px', fontWeight: 600 }}>{cartCount}</span>
-            )}
-          </span>
-        </div>
-        {loading ? (
+      <div className="category-search-bar" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <span className="material-icons">search</span>
+        <input
+          type="text"
+          placeholder="Search biryani points..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <span style={{ marginLeft: 'auto', cursor: 'pointer', position: 'relative' }} onClick={() => setCartModalOpen(true)}>
+          <span className="material-icons" style={{ fontSize: 28, color: '#ff4d5a' }}>shopping_cart</span>
+          {cartCount > 0 && (
+            <span style={{ position: 'absolute', top: -6, right: -8, background: '#ff4d5a', color: '#fff', borderRadius: '50%', fontSize: 13, padding: '2px 6px', fontWeight: 600 }}>{cartCount}</span>
+          )}
+        </span>
+      </div>
+      {loading ? (
           <div className="register-logo food-bounce" style={{ marginBottom: '12px', marginTop: '32px', display:'flex', justifyContent:'center' }}>
             <DotLottieReact
               src="/animations/loading.lottie"
@@ -169,15 +169,15 @@ export default function BiryaniPage() {
               style={{ width: 180, height: 180 }}
             />
           </div>
-        ) : (
-          <div className="category-cards-grid">
-            {biryani
-              .filter(r => r.name.toLowerCase().includes(search.toLowerCase()))
-              .map((r, idx) => (
+      ) : (
+        <div className="category-cards-grid">
+          {biryani
+            .filter(r => r.name.toLowerCase().includes(search.toLowerCase()))
+            .map((r, idx) => (
                 <RestaurantCard key={idx} restaurant={r} onCardClick={() => openMenuModal(r)} />
-              ))}
-          </div>
-        )}
+            ))}
+        </div>
+      )}
       </div>
       <ReactModal
         isOpen={!!menuModalParent}
@@ -188,39 +188,39 @@ export default function BiryaniPage() {
       >
         <button className="admin-menu-modal-close" onClick={() => setMenuModalParent(null)}>&times;</button>
         <div style={{ overflowY: 'auto', height: 'calc(100% - 70px)'}}>
-          {menuModalParent && (
-            <>
-              <h2 style={{textAlign: 'center', marginBottom: 12}}>{menuModalParent.name} Menu</h2>
-              <div style={{textAlign: 'center', color: '#888', marginBottom: 18}}>{menuModalParent.location}</div>
-              <input
-                className="admin-dish-search"
-                type="text"
-                placeholder="Search dishes..."
-                value={dishSearch}
-                onChange={e => setDishSearch(e.target.value)}
-                style={{marginBottom: 10, marginTop: 2, padding: '6px 10px', borderRadius: 6, border: '1px solid #eee', width: '90%'}}
-              />
-              <div className="admin-dashboard-dishes-cards">
-                {dishes
-                  .filter(dish =>
-                    !dishSearch || dish.name.toLowerCase().includes(dishSearch.toLowerCase())
-                  )
-                  .map((dish, dIdx) => (
-                    <div key={dIdx} className="admin-dashboard-dish-card">
-                      <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
+        {menuModalParent && (
+          <>
+            <h2 style={{textAlign: 'center', marginBottom: 12}}>{menuModalParent.name} Menu</h2>
+            <div style={{textAlign: 'center', color: '#888', marginBottom: 18}}>{menuModalParent.location}</div>
+            <input
+              className="admin-dish-search"
+              type="text"
+              placeholder="Search dishes..."
+              value={dishSearch}
+              onChange={e => setDishSearch(e.target.value)}
+              style={{marginBottom: 10, marginTop: 2, padding: '6px 10px', borderRadius: 6, border: '1px solid #eee', width: '90%'}}
+            />
+            <div className="admin-dashboard-dishes-cards">
+              {dishes
+                .filter(dish =>
+                  !dishSearch || dish.name.toLowerCase().includes(dishSearch.toLowerCase())
+                )
+                .map((dish, dIdx) => (
+                  <div key={dIdx} className="admin-dashboard-dish-card">
+                    <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
                       <div className="admin-dashboard-dish-info">
-                        <div className="admin-dashboard-dish-name">{dish.name}</div>
-                        <div className="admin-dashboard-dish-price">₹{dish.price}</div>
+                    <div className="admin-dashboard-dish-name">{dish.name}</div>
+                    <div className="admin-dashboard-dish-price">₹{dish.price}</div>
                         <div className="admin-dashboard-dish-actions">
                           {cart[dish.id]?.quantity > 0 ? (
                             <>
                               <button onClick={() => removeFromCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: cart[dish.id] ? 'pointer' : 'not-allowed', color: cart[dish.id] ? '#ff4d5a' : '#ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span className="material-icons">remove</span>
-                              </button>
+                        <span className="material-icons">remove</span>
+                      </button>
                               <span style={{ minWidth: 18, textAlign: 'center', fontWeight: 600 }}>{cart[dish.id]?.quantity}</span>
                               <button onClick={() => originalAddToCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: 'pointer', color: '#1a73e8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span className="material-icons">add</span>
-                              </button>
+                        <span className="material-icons">add</span>
+                      </button>
                             </>
                           ) : (
                             <button className="add-btn" onClick={() => addToCart(dish)}>
@@ -228,12 +228,12 @@ export default function BiryaniPage() {
                             </button>
                           )}
                         </div>
-                      </div>
                     </div>
-                  ))}
-              </div>
-              <ReviewSection user={currentUser} restaurantId={menuModalParent.id} />
-            </>
+                  </div>
+                ))}
+            </div>
+            <ReviewSection user={currentUser} restaurantId={menuModalParent.id} />
+          </>
           )}
         </div>
         {showCartBar && cartCount > 0 && (

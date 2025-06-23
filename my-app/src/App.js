@@ -9,6 +9,7 @@ import RestaurantsPage from './components/RestaurantsPage';
 import BiryaniPage from './components/BiryaniPage';
 import PicklesPage from './components/PicklesPage';
 import TiffinsPage from './components/TiffinsPage';
+import FreshMeatPage from './components/FreshMeatPage';
 import ParentMenuPage from './components/ParentMenuPage';
 import { CartProvider } from './CartContext';
 import './App.css';
@@ -33,6 +34,7 @@ function App() {
             <Route path="/biryani" element={<BiryaniPage />} />
             <Route path="/pickles" element={<PicklesPage />} />
             <Route path="/tiffins" element={<TiffinsPage />} />
+            <Route path="/fresh-meat" element={<FreshMeatPage />} />
             <Route path="/parent/:id" element={<ParentMenuPage />} />
           </Routes>
         </div>

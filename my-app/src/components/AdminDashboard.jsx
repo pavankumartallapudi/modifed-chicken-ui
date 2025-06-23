@@ -475,8 +475,8 @@ const AdminDashboard = () => {
                             placeholder="Location"
                           />
                           <div className="admin-edit-form-actions">
-                            <button type="submit" className="edit-btn">Save</button>
-                            <button type="button" onClick={cancelEditParent} className="delete-btn">Cancel</button>
+                          <button type="submit" className="edit-btn">Save</button>
+                          <button type="button" onClick={cancelEditParent} className="delete-btn">Cancel</button>
                           </div>
                         </form>
                       ) : (
@@ -597,19 +597,19 @@ const AdminDashboard = () => {
                               placeholder="Dish Price"
                             />
                             <div className="admin-edit-form-actions">
-                              <button type="submit" className="edit-btn">Save</button>
-                              <button type="button" onClick={cancelEditDish} className="delete-btn">Cancel</button>
+                            <button type="submit" className="edit-btn">Save</button>
+                            <button type="button" onClick={cancelEditDish} className="delete-btn">Cancel</button>
                             </div>
                           </form>
                         ) : (
                           <>
                             <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
                             <div className="admin-dashboard-dish-details">
-                              <div className="admin-dashboard-dish-name">{dish.name}</div>
-                              <div className="admin-dashboard-dish-price">₹{dish.price}</div>
-                              <div className="admin-dashboard-dish-actions">
-                                <button className="edit-btn" onClick={() => startEditDish(parentModal.id, dIdx, dish)}>Edit</button>
-                                <button className="delete-btn" onClick={() => handleDeleteDish(parentModal.id, dIdx)}>Delete</button>
+                            <div className="admin-dashboard-dish-name">{dish.name}</div>
+                            <div className="admin-dashboard-dish-price">₹{dish.price}</div>
+                            <div className="admin-dashboard-dish-actions">
+                              <button className="edit-btn" onClick={() => startEditDish(parentModal.id, dIdx, dish)}>Edit</button>
+                              <button className="delete-btn" onClick={() => handleDeleteDish(parentModal.id, dIdx)}>Delete</button>
                               </div>
                             </div>
                           </>

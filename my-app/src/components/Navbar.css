@@ -1,89 +1,131 @@
 /* Navbar Header */
 .navbar-header {
-  position: absolute;
-  top: 10px;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 60px; /* Set a fixed height for the header area */
+  height: 70px;
   z-index: 1000;
-  padding: 0 80px; /* Apply symmetrical padding to the header */
+  padding: 0 16px;
   box-sizing: border-box;
 }
 
 .hamburger-btn {
-  position: absolute;
-  left: 20px; /* Position relative to viewport edge */
-  top: 50%;
-  transform: translateY(-50%);
   background: white;
   border: 1px solid #f0f0f0;
   border-radius: 50%;
   width: 48px;
   height: 48px;
   color: #333;
-  font-size: 28px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   padding: 0;
-}
-
-.hamburger-btn:hover, .hamburger-btn:focus {
-  background: none;
-  outline: none;
+  flex-shrink: 0; /* Prevent shrinking */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: all 0.2s;
 }
 
 .hamburger-btn:focus-visible {
   outline: none;
 }
 
+.hamburger-btn .material-icons {
+  font-size: 24px;
+  color: #333;
+}
+
+.hamburger-btn:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: scale(1.05);
+}
+
 /* Search Bar Styles */
 .search-container {
-  width: 100%;
-  max-width: 800px; /* This will now take full effect */
-  height: 100%;
-  margin: 0 auto; /* This centers the container */
+  flex-grow: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 0; /* Removed conflicting padding */
-  box-sizing: border-box;
+  padding: 0 12px;
 }
 
 .search-bar {
   position: relative;
-  width: 100%;
   display: flex;
   align-items: center;
-  background: white;
+  background: #f7f7f7;
   border-radius: 999px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-  padding: 0 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  flex-grow: 1; /* Make search bar take available space */
+  margin: 0 12px; /* Add space around it */
   border: 1px solid #eee;
+  height: 44px;
 }
 
 .search-bar input {
   width: 100%;
-  padding: 14px 12px;
+  height: 100%;
+  padding: 12px 18px 12px 48px;
   border: none;
   border-radius: 999px;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   background: transparent;
   outline: none;
-  box-shadow: none;
-  padding-left: 44px;
 }
 
 .search-icon {
   position: absolute;
-  left: 22px;
+  left: 18px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.4rem;
-  color: #aaa;
+  font-size: 22px;
+  color: #888;
   pointer-events: none;
+}
+
+.cart-btn {
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    color: #333;
+    flex-shrink: 0; /* Prevent shrinking */
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: all 0.2s;
+}
+
+.cart-btn:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: scale(1.05);
+}
+
+.cart-btn .material-icons {
+    font-size: 24px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #ff4d5a;
+    color: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
 }
 
 /* Sidebar */

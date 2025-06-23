@@ -9,6 +9,7 @@ const sections = [
     { key: 'biryani', label: 'Biryani Points', icon: '🍚' },
     { key: 'pickles', label: 'Pickles', icon: '🥒' },
     { key: 'tiffins', label: 'Tiffins', icon: '🥘' },
+    { key: 'fresh-meat', label: 'Fresh Meat', icon: '🥩' },
 ];
 
 const carouselImages = [
@@ -47,6 +48,7 @@ const Home = () => {
         biryani: [],
         pickles: [],
         tiffins: [],
+        'fresh-meat': [],
     });
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
@@ -57,7 +59,7 @@ const Home = () => {
                 .from('admin_items')
                 .select('*');
             if (error) return;
-            const grouped = { restaurants: [], biryani: [], pickles: [], tiffins: [] };
+            const grouped = { restaurants: [], biryani: [], pickles: [], tiffins: [], 'fresh-meat': [] };
             data.forEach(item => {
                 if (grouped[item.section]) grouped[item.section].push(item);
             });

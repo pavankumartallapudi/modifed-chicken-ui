@@ -7,8 +7,8 @@ import ReviewSection from './ReviewSection';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import RestaurantCard from './RestaurantCard';
 
-export default function PicklesPage() {
-  const [pickles, setPickles] = useState([]);
+export default function FreshMeatPage() {
+  const [freshMeat, setFreshMeat] = useState([]);
   const [search, setSearch] = useState('');
   const [menuModalParent, setMenuModalParent] = useState(null);
   const [dishes, setDishes] = useState([]);
@@ -27,7 +27,7 @@ export default function PicklesPage() {
   const addToCart = (dish) => {
     const cartItems = Object.values(cart);
     if (cartItems.length > 0 && cartItems[0].dish.parent_id !== dish.parent_id) {
-      if (window.confirm('Your cart contains items from another pickle vendor. Would you like to clear it and add this item?')) {
+      if (window.confirm('Your cart contains items from another meat shop. Would you like to clear it and add this item?')) {
         clearCart();
         originalAddToCart(dish);
       }
@@ -42,8 +42,8 @@ export default function PicklesPage() {
       const { data, error } = await supabase
         .from('admin_items')
         .select('*')
-        .eq('section', 'pickles');
-      setPickles(data || []);
+        .eq('section', 'fresh-meat');
+      setFreshMeat(data || []);
       setLoading(false);
     };
     fetchData();
@@ -66,7 +66,7 @@ export default function PicklesPage() {
   const cartItems = Object.values(cart);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const cartTotal = cartItems.reduce((sum, item) => sum + item.dish.price * item.quantity, 0);
-  const cartPickleVendor = pickles.find(p => p.id === cartItems[0]?.dish.parent_id);
+  const cartMeatShop = freshMeat.find(m => m.id === cartItems[0]?.dish.parent_id);
 
   // Show cart bar when an item is added
   useEffect(() => {
@@ -145,22 +145,22 @@ export default function PicklesPage() {
       <svg className="food-float food-float-15" width="24" height="24" viewBox="0 0 40 40" fill="none"><ellipse cx="20" cy="22" rx="10" ry="4" fill="#fff" /></svg>
       {/* Main content */}
       <div style={{position:'relative', zIndex:2}}>
-      <div className="category-search-bar" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-        <span className="material-icons">search</span>
-        <input
-          type="text"
-          placeholder="Search pickles..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        <span style={{ marginLeft: 'auto', cursor: 'pointer', position: 'relative' }} onClick={() => setCartModalOpen(true)}>
-          <span className="material-icons" style={{ fontSize: 28, color: '#ff4d5a' }}>shopping_cart</span>
-          {cartCount > 0 && (
-            <span style={{ position: 'absolute', top: -6, right: -8, background: '#ff4d5a', color: '#fff', borderRadius: '50%', fontSize: 13, padding: '2px 6px', fontWeight: 600 }}>{cartCount}</span>
-          )}
-        </span>
-      </div>
-      {loading ? (
+        <div className="category-search-bar" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <span className="material-icons">search</span>
+          <input
+            type="text"
+            placeholder="Search meat shops..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <span style={{ marginLeft: 'auto', cursor: 'pointer', position: 'relative' }} onClick={() => setCartModalOpen(true)}>
+            <span className="material-icons" style={{ fontSize: 28, color: '#ff4d5a' }}>shopping_cart</span>
+            {cartCount > 0 && (
+              <span style={{ position: 'absolute', top: -6, right: -8, background: '#ff4d5a', color: '#fff', borderRadius: '50%', fontSize: 13, padding: '2px 6px', fontWeight: 600 }}>{cartCount}</span>
+            )}
+          </span>
+        </div>
+        {loading ? (
           <div className="register-logo food-bounce" style={{ marginBottom: '12px', marginTop: '32px', display:'flex', justifyContent:'center' }}>
             <DotLottieReact
               src="/animations/loading.lottie"
@@ -169,15 +169,15 @@ export default function PicklesPage() {
               style={{ width: 180, height: 180 }}
             />
           </div>
-      ) : (
-        <div className="category-cards-grid">
-          {pickles
-            .filter(r => r.name.toLowerCase().includes(search.toLowerCase()))
-            .map((r, idx) => (
+        ) : (
+          <div className="category-cards-grid">
+            {freshMeat
+              .filter(r => r.name.toLowerCase().includes(search.toLowerCase()))
+              .map((r, idx) => (
                 <RestaurantCard key={idx} restaurant={r} onCardClick={() => openMenuModal(r)} />
-            ))}
-        </div>
-      )}
+              ))}
+          </div>
+        )}
       </div>
       <ReactModal
         isOpen={!!menuModalParent}
@@ -188,39 +188,39 @@ export default function PicklesPage() {
       >
         <button className="admin-menu-modal-close" onClick={() => setMenuModalParent(null)}>&times;</button>
         <div style={{ overflowY: 'auto', height: 'calc(100% - 70px)'}}>
-        {menuModalParent && (
-          <>
-            <h2 style={{textAlign: 'center', marginBottom: 12}}>{menuModalParent.name} Menu</h2>
-            <div style={{textAlign: 'center', color: '#888', marginBottom: 18}}>{menuModalParent.location}</div>
-            <input
-              className="admin-dish-search"
-              type="text"
-              placeholder="Search dishes..."
-              value={dishSearch}
-              onChange={e => setDishSearch(e.target.value)}
-              style={{marginBottom: 10, marginTop: 2, padding: '6px 10px', borderRadius: 6, border: '1px solid #eee', width: '90%'}}
-            />
-            <div className="admin-dashboard-dishes-cards">
-              {dishes
-                .filter(dish =>
-                  !dishSearch || dish.name.toLowerCase().includes(dishSearch.toLowerCase())
-                )
-                .map((dish, dIdx) => (
-                  <div key={dIdx} className="admin-dashboard-dish-card">
-                    <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
+          {menuModalParent && (
+            <>
+              <h2 style={{textAlign: 'center', marginBottom: 12}}>{menuModalParent.name} Menu</h2>
+              <div style={{textAlign: 'center', color: '#888', marginBottom: 18}}>{menuModalParent.location}</div>
+              <input
+                className="admin-dish-search"
+                type="text"
+                placeholder="Search dishes..."
+                value={dishSearch}
+                onChange={e => setDishSearch(e.target.value)}
+                style={{marginBottom: 10, marginTop: 2, padding: '6px 10px', borderRadius: 6, border: '1px solid #eee', width: '90%'}}
+              />
+              <div className="admin-dashboard-dishes-cards">
+                {dishes
+                  .filter(dish =>
+                    !dishSearch || dish.name.toLowerCase().includes(dishSearch.toLowerCase())
+                  )
+                  .map((dish, dIdx) => (
+                    <div key={dIdx} className="admin-dashboard-dish-card">
+                      <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
                       <div className="admin-dashboard-dish-info">
-                    <div className="admin-dashboard-dish-name">{dish.name}</div>
-                    <div className="admin-dashboard-dish-price">₹{dish.price}</div>
+                        <div className="admin-dashboard-dish-name">{dish.name}</div>
+                        <div className="admin-dashboard-dish-price">₹{dish.price}</div>
                         <div className="admin-dashboard-dish-actions">
                           {cart[dish.id]?.quantity > 0 ? (
                             <>
                               <button onClick={() => removeFromCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: cart[dish.id] ? 'pointer' : 'not-allowed', color: cart[dish.id] ? '#ff4d5a' : '#ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span className="material-icons">remove</span>
-                      </button>
+                                <span className="material-icons">remove</span>
+                              </button>
                               <span style={{ minWidth: 18, textAlign: 'center', fontWeight: 600 }}>{cart[dish.id]?.quantity}</span>
                               <button onClick={() => originalAddToCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: 'pointer', color: '#1a73e8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span className="material-icons">add</span>
-                      </button>
+                                <span className="material-icons">add</span>
+                              </button>
                             </>
                           ) : (
                             <button className="add-btn" onClick={() => addToCart(dish)}>
@@ -228,12 +228,12 @@ export default function PicklesPage() {
                             </button>
                           )}
                         </div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-            </div>
-            <ReviewSection user={currentUser} restaurantId={menuModalParent.id} />
-          </>
+                  ))}
+              </div>
+              <ReviewSection user={currentUser} restaurantId={menuModalParent.id} />
+            </>
           )}
         </div>
         {showCartBar && cartCount > 0 && (
@@ -256,7 +256,7 @@ export default function PicklesPage() {
       >
         <button className="admin-menu-modal-close" onClick={() => setCartModalOpen(false)}>&times;</button>
         <h2 className="cart-title">Your Cart</h2>
-        {cartPickleVendor && <div className="cart-restaurant-name">{cartPickleVendor.name}'s Pickles</div>}
+        {cartMeatShop && <div className="cart-restaurant-name">{cartMeatShop.name}'s Meat Shop</div>}
         {checkoutStep === 'cart' && (
           cartItems.length === 0 ? (
             <div className="cart-empty-message">
@@ -278,11 +278,11 @@ export default function PicklesPage() {
                       <div className="cart-item-price">₹{item.dish.price}</div>
                     </div>
                     <div className="cart-item-controls">
-                      <button onClick={() => removeFromCart(item.dish)} className="quantity-btn">
+                      <button className="quantity-btn" onClick={() => removeFromCart(item.dish)}>
                         <span className="material-icons">remove</span>
                       </button>
                       <span className="quantity-display">{item.quantity}</span>
-                      <button onClick={() => addToCart(item.dish)} className="quantity-btn">
+                      <button className="quantity-btn" onClick={() => originalAddToCart(item.dish)}>
                         <span className="material-icons">add</span>
                       </button>
                     </div>
@@ -291,54 +291,61 @@ export default function PicklesPage() {
               </div>
               <div className="cart-summary">
                 <div className="cart-total">
-                  <span>Total</span>
+                  <span>Total:</span>
                   <span className="total-amount">₹{cartTotal}</span>
                 </div>
-                <button onClick={() => setCheckoutStep('form')} className="cart-checkout-btn">Checkout</button>
+                <button className="cart-checkout-btn" onClick={() => setCheckoutStep('form')}>
+                  Proceed to Checkout
+                </button>
               </div>
             </div>
           )
         )}
         {checkoutStep === 'form' && (
-          <form onSubmit={handleOrderSubmit} style={{marginTop:8}}>
-            <input
-              type="text"
-              placeholder="Name"
-              value={orderDetails.name}
-              onChange={e => setOrderDetails({ ...orderDetails, name: e.target.value })}
-              required
-              style={{width:'100%', marginBottom:10, padding:8, borderRadius:6, border:'1px solid #eee'}}
-            />
-            <input
-              type="text"
-              placeholder="Phone"
-              value={orderDetails.phone}
-              onChange={e => setOrderDetails({ ...orderDetails, phone: e.target.value })}
-              required
-              style={{width:'100%', marginBottom:10, padding:8, borderRadius:6, border:'1px solid #eee'}}
-            />
-            <textarea
-              placeholder="Delivery Address"
-              value={orderDetails.address}
-              onChange={e => setOrderDetails({ ...orderDetails, address: e.target.value })}
-              required
-              style={{width:'100%', marginBottom:10, padding:8, borderRadius:6, border:'1px solid #eee', minHeight:60}}
-            />
-            <div style={{display:'flex', gap:10}}>
-              <button type="submit" style={{flex:1, background:'#ff4d5a', color:'#fff', border:'none', borderRadius:8, padding:'12px 0', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Place Order</button>
-              <button type="button" onClick={() => setCheckoutStep('cart')} style={{flex:1, background:'#eee', color:'#444', border:'none', borderRadius:8, padding:'12px 0', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Back</button>
+          <form onSubmit={handleOrderSubmit} style={{ padding: '20px 0' }}>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}>Name:</label>
+              <input
+                type="text"
+                required
+                value={orderDetails.name}
+                onChange={e => setOrderDetails({...orderDetails, name: e.target.value})}
+                style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
             </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}>Phone:</label>
+              <input
+                type="tel"
+                required
+                value={orderDetails.phone}
+                onChange={e => setOrderDetails({...orderDetails, phone: e.target.value})}
+                style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16 }}
+              />
+            </div>
+            <div style={{ marginBottom: 20 }}>
+              <label style={{ display: 'block', marginBottom: 8, fontWeight: 600 }}>Address:</label>
+              <textarea
+                required
+                value={orderDetails.address}
+                onChange={e => setOrderDetails({...orderDetails, address: e.target.value})}
+                style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ddd', fontSize: 16, minHeight: 80 }}
+              />
+            </div>
+            <button type="submit" style={{ width: '100%', padding: 12, background: '#ff4d5a', color: 'white', border: 'none', borderRadius: 8, fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>
+              Place Order
+            </button>
           </form>
         )}
         {checkoutStep === 'confirm' && (
-          <div style={{textAlign:'center', marginTop:24}}>
-            <h3 style={{color:'#1a7f37'}}>Order Confirmed!</h3>
-            <p>Your order ID: <b>{orderId}</b></p>
-            <p>Thank you for ordering, {orderDetails.name}!</p>
-            <button onClick={() => { setCheckoutStep('cart'); setCartModalOpen(false); }} style={{marginTop:18, background:'#ff4d5a', color:'#fff', border:'none', borderRadius:8, padding:'10px 28px', fontWeight:600, fontSize:'1.08rem', cursor:'pointer'}}>Close</button>
+          <div style={{ textAlign: 'center', padding: '40px 20px' }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>✅</div>
+            <h3 style={{ marginBottom: 8 }}>Order Placed Successfully!</h3>
+            <p style={{ color: '#666', marginBottom: 16 }}>Order ID: {orderId}</p>
+            <p style={{ color: '#666' }}>We'll contact you soon with delivery details.</p>
           </div>
         )}
       </ReactModal>
     </div>
   );
-} 
+}

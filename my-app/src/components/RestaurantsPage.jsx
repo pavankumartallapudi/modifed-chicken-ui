@@ -311,53 +311,53 @@ export default function RestaurantsPage() {
       >
         <button className="admin-menu-modal-close" onClick={() => setMenuModalParent(null)}>&times;</button>
         <div style={{ overflowY: 'auto', height: 'calc(100% - 70px)'}}>
-          {menuModalParent && (
-            <>
-              <h2 style={{textAlign: 'center', marginBottom: 12}}>{menuModalParent.name} Menu</h2>
-              <div style={{textAlign: 'center', color: '#888', marginBottom: 18}}>{menuModalParent.location}</div>
-              <input
-                className="admin-dish-search"
-                type="text"
-                placeholder="Search dishes..."
-                value={dishSearch}
-                onChange={e => setDishSearch(e.target.value)}
-                style={{marginBottom: 10, marginTop: 2, padding: '6px 10px', borderRadius: 6, border: '1px solid #eee', width: '90%'}}
-              />
-              <div className="admin-dashboard-dishes-cards">
-                {dishes
-                  .filter(dish =>
-                    !dishSearch || dish.name.toLowerCase().includes(dishSearch.toLowerCase())
-                  )
-                  .map((dish, dIdx) => (
-                    <div key={dIdx} className="admin-dashboard-dish-card">
-                      <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
-                      <div className="admin-dashboard-dish-info">
-                        <div className="admin-dashboard-dish-name">{dish.name}</div>
-                        <div className="admin-dashboard-dish-price">₹{dish.price}</div>
+        {menuModalParent && (
+          <>
+            <h2 style={{textAlign: 'center', marginBottom: 12}}>{menuModalParent.name} Menu</h2>
+            <div style={{textAlign: 'center', color: '#888', marginBottom: 18}}>{menuModalParent.location}</div>
+            <input
+              className="admin-dish-search"
+              type="text"
+              placeholder="Search dishes..."
+              value={dishSearch}
+              onChange={e => setDishSearch(e.target.value)}
+              style={{marginBottom: 10, marginTop: 2, padding: '6px 10px', borderRadius: 6, border: '1px solid #eee', width: '90%'}}
+            />
+            <div className="admin-dashboard-dishes-cards">
+              {dishes
+                .filter(dish =>
+                  !dishSearch || dish.name.toLowerCase().includes(dishSearch.toLowerCase())
+                )
+                .map((dish, dIdx) => (
+                  <div key={dIdx} className="admin-dashboard-dish-card">
+                    <img src={dish.photo_url} alt={dish.name} className="admin-dashboard-dish-img" />
+                    <div className="admin-dashboard-dish-info">
+                      <div className="admin-dashboard-dish-name">{dish.name}</div>
+                      <div className="admin-dashboard-dish-price">₹{dish.price}</div>
                         <div className="admin-dashboard-dish-actions">
-                          {cart[dish.id]?.quantity > 0 ? (
-                            <>
-                              <button onClick={() => removeFromCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: cart[dish.id] ? 'pointer' : 'not-allowed', color: cart[dish.id] ? '#ff4d5a' : '#ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span className="material-icons">remove</span>
-                              </button>
-                              <span style={{ minWidth: 18, textAlign: 'center', fontWeight: 600 }}>{cart[dish.id]?.quantity}</span>
-                              <button onClick={() => originalAddToCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: 'pointer', color: '#1a73e8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <span className="material-icons">add</span>
-                              </button>
-                            </>
-                          ) : (
-                            <button className="add-btn" onClick={() => addToCart(dish)}>
-                              Add
+                        {cart[dish.id]?.quantity > 0 ? (
+                          <>
+                            <button onClick={() => removeFromCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: cart[dish.id] ? 'pointer' : 'not-allowed', color: cart[dish.id] ? '#ff4d5a' : '#ccc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <span className="material-icons">remove</span>
                             </button>
-                          )}
-                        </div>
+                            <span style={{ minWidth: 18, textAlign: 'center', fontWeight: 600 }}>{cart[dish.id]?.quantity}</span>
+                              <button onClick={() => originalAddToCart(dish)} style={{ padding: '2px 10px', fontSize: 20, borderRadius: 6, border: '1px solid #eee', background: '#fafbfc', cursor: 'pointer', color: '#1a73e8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <span className="material-icons">add</span>
+                            </button>
+                          </>
+                        ) : (
+                          <button className="add-btn" onClick={() => addToCart(dish)}>
+                            Add
+                          </button>
+                        )}
                       </div>
                     </div>
-                  ))}
-              </div>
-              <ReviewSection user={currentUser} restaurantId={menuModalParent.id} />
-            </>
-          )}
+                  </div>
+                ))}
+            </div>
+            <ReviewSection user={currentUser} restaurantId={menuModalParent.id} />
+          </>
+        )}
         </div>
         {showCartBar && cartCount > 0 && (
           <div className="cart-bottom-bar">
