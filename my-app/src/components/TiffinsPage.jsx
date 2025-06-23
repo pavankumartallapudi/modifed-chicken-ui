@@ -77,40 +77,49 @@ export default function TiffinsPage() {
     }
   }, [cartCount]);
 
-  async function handleOrderSubmit(e) {
+  // Add Razorpay script loader
+  useEffect(() => {
+    if (!window.Razorpay) {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  // Add Razorpay payment handler
+  function handleRazorpayPayment(e) {
     e.preventDefault();
-    // 1. Insert order
-    const { data: order, error: orderError } = await supabase
-      .from('orders')
-      .insert([{
+    if (!window.Razorpay) {
+      alert('Payment system is still loading. Please try again in a moment.');
+      return;
+    }
+    const amount = cartItems.reduce((sum, item) => sum + item.dish.price * item.quantity, 0);
+    const options = {
+      key: process.env.REACT_APP_RAZORPAY_KEY,
+      amount: amount * 100,
+      currency: 'INR',
+      name: 'Chicken App',
+      description: 'Order Payment',
+      handler: function (response) {
+        setOrderId(Math.floor(Math.random() * 1000000));
+        clearCart();
+        setCheckoutStep('confirm');
+      },
+      prefill: {
         name: orderDetails.name,
-        phone: orderDetails.phone,
-        address: orderDetails.address,
-        total_price: cartTotal,
-      }])
-      .select()
-      .single();
-    if (orderError) {
-      alert('Order failed: ' + orderError.message);
-      return;
-    }
-    // 2. Insert order_items
-    const orderItems = cartItems.map(item => ({
-      order_id: order.id,
-      dish_id: item.dish.id,
-      quantity: item.quantity,
-      price_at_order: item.dish.price,
-    }));
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(orderItems);
-    if (itemsError) {
-      alert('Order items failed: ' + itemsError.message);
-      return;
-    }
-    setOrderId(order.id);
-    clearCart();
-    setCheckoutStep('confirm');
+        email: '',
+        contact: orderDetails.phone
+      },
+      notes: {
+        address: orderDetails.address
+      },
+      theme: {
+        color: '#ff4d5a'
+      }
+    };
+    const rzp = new window.Razorpay(options);
+    rzp.open();
   }
 
   // Reset checkout step when opening/closing cart modal
@@ -300,7 +309,7 @@ export default function TiffinsPage() {
           )
         )}
         {checkoutStep === 'form' && (
-          <form onSubmit={handleOrderSubmit} style={{marginTop:8}}>
+          <form onSubmit={handleRazorpayPayment} style={{marginTop:8}}>
             <input
               type="text"
               placeholder="Name"
